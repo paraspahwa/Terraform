@@ -1,0 +1,83 @@
+ 1 sudo apt-get update && sudo apt-get install -y gnupg software-properties- common
+    2  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    3  gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+    4  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+    5  sudo apt update
+    6  sudo apt-get install terraform
+    7  terraform --version
+    8  terraform -help
+    9  mkdir terraform-course
+   10  ls
+   11  cd terraform-course/
+   12  sudo vi devops.txt
+   13  cat devops.txt
+   14  mkdir terraform-local
+   15  ls
+   16  ll
+   17  cd terraform-local/
+   18  ls
+   19  ll
+   20  vi local.tf
+   21  pwd
+   22  vi local.tf
+   23  cat local.tf
+   24  vi local.tf
+   25  cat local.tf
+   26  terraform init
+   27  terraform validate
+   28  terraform plan
+   29  terrform apply
+   30*
+   31  ls
+   32  cat devops_automated.txt
+   33  ls
+   34  ll
+   35  cat terraform.tfstate
+   36  history
+
+    1  ls
+    2  cd terraform-course/
+    3  ls
+    4  cd terraform-docker/
+    5  ls
+    6  terraform plan
+    7  sudo apt-get install docker.io
+    8  docker --version
+    9  sudo docker ps
+   10  sudo chown ubuntu /var/run/docker.sock
+   11  terraform plan
+   12  ls
+   13  vi main.tf
+   14  terraform plan
+   15  terraform apply
+   16  history
+
+
+main.tf
+
+terraform {
+  required_providers {
+    docker = {
+      source = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
+  }
+}
+
+provider "docker" {}
+
+resource "docker_image" "nginx" {
+name = "nginx:latest"
+keep_locally = false
+}
+
+resource "docker_container" "nginx" {
+image = docker_image.nginx.image_id
+name = "nginx-tf"
+ports {
+        internal = 80
+        external = 80
+}
+}
+
